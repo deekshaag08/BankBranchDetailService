@@ -23,8 +23,8 @@ public class BranchesDaoImpl implements BranchesDao{
 	@Value("${spring.datasource.url}")
 	private String dbUrl;
 	
-	@Autowired
-	  private DataSource dataSource;
+	
+	private DataSource dataSource;
 	
 	private Connection connection;
 	
@@ -32,6 +32,7 @@ public class BranchesDaoImpl implements BranchesDao{
 	public BranchesDaoImpl()
 	{
 		try {
+			dataSource = dataSource();
 			connection = dataSource.getConnection();
 		}catch (SQLException e) {
             System.out.println("Connection failure.");
@@ -39,7 +40,7 @@ public class BranchesDaoImpl implements BranchesDao{
         }
 	}
 	
-	@Bean
+	//@Bean
 	  public DataSource dataSource() throws SQLException {
 	    if (dbUrl == null || dbUrl.isEmpty()) {
 	      return new HikariDataSource();
@@ -49,6 +50,7 @@ public class BranchesDaoImpl implements BranchesDao{
 	      return new HikariDataSource(config);
 	    }
 	  }
+	
 	public Branch getBranch(String ifsc)
 	{
 		Branch branchObj = new Branch();
