@@ -16,17 +16,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RestController
 public class BankDetailsController {
 
+	private final BranchesDao branchesDao = new BranchesDaoImpl();
 	
 	@RequestMapping(path = "/getBranch/{ifsc}", method = RequestMethod.GET)
 	public Branch getBranch(@PathVariable String ifsc) {
-       BranchesDao branchesDao = new BranchesDaoImpl();
        Branch branch =  branchesDao.getBranch(ifsc);
        return branch;
     }
     
     @RequestMapping(path = "/getBranches/{bankName}/{city}", method = RequestMethod.GET)
     public List<Branch> getBranches(@PathVariable String bankName, @PathVariable String city) {
-       BranchesDao branchesDao = new BranchesDaoImpl();
        List<Branch> branchList =  branchesDao.getBranchList(bankName, city);
        return branchList;
     }
