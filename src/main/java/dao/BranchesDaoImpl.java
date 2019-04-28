@@ -20,8 +20,9 @@ import entities.Branch;
 
 public class BranchesDaoImpl implements BranchesDao{
 	
-	@Value("${spring.datasource.url}")
-	private String dbUrl;
+	//@Value("${spring.datasource.url}")
+	private String dbUrl= "jdbc:postgresql://ec2-54-225-129-101.compute-1.amazonaws.com:5432/d3k3lqaj475u7s?user=crotlljigdjjml&password=bbae5da2de49847ab3dfca307ae2275ddc55316b451b6b3dc8" + 
+			"e041615cac7ac6&sslmode=require";
 	
 	
 	private DataSource dataSource;
