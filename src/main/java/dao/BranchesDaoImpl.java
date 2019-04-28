@@ -34,14 +34,12 @@ public class BranchesDaoImpl implements BranchesDao{
 	{
 		try {
 			dataSource = dataSource();
-			connection = dataSource.getConnection();
 		}catch (SQLException e) {
             System.out.println("Connection failure.");
             e.printStackTrace();
         }
 	}
 	
-	//@Bean
 	  public DataSource dataSource() throws SQLException {
 	    if (dbUrl == null || dbUrl.isEmpty()) {
 	      return new HikariDataSource();
@@ -55,10 +53,14 @@ public class BranchesDaoImpl implements BranchesDao{
 	public Branch getBranch(String ifsc)
 	{
 		Branch branchObj = new Branch();
+		ResultSet resultSet = null;
+		Statement statement = null;
+		
 		try {
-			Statement statement = connection.createStatement();
+			connection = dataSource.getConnection();
+			statement = connection.createStatement();
 			String query = "SELECT bank_id, branch, address, city, district, state FROM branches where ifsc='" + ifsc +"'";
-			ResultSet resultSet = statement.executeQuery(query);
+			resultSet = statement.executeQuery(query);
 			if(resultSet.next()) {
                 branchObj.setBankId(resultSet.getInt("bank_id"));
                 branchObj.setAddress(resultSet.getString("address"));
@@ -72,6 +74,11 @@ public class BranchesDaoImpl implements BranchesDao{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		finally {
+		    try { resultSet.close(); } catch (Exception e) { /* ignored */ }
+		    try { statement.close(); } catch (Exception e) { /* ignored */ }
+		    try { connection.close(); } catch (Exception e) { /* ignored */ }
+		}
 		return branchObj;
 		
 	}
@@ -79,13 +86,15 @@ public class BranchesDaoImpl implements BranchesDao{
 	public List<Branch> getBranchList(String bankName, String city)
 	{
 		List<Branch> branchList= new ArrayList<>();
-		
+		ResultSet resultSet = null;
+		Statement statement = null;
 		try {
-			Statement statement = connection.createStatement();
+			connection = dataSource.getConnection();
+			statement = connection.createStatement();
 			String query = "SELECT bank_id, branch, ifsc, address, city, district,"
 							+ " state FROM bank_branches where bank_name='"
 							+ bankName +"' AND city='"+ city+ "'";
-			ResultSet resultSet = statement.executeQuery(query);
+			resultSet = statement.executeQuery(query);
 			Branch branchObj = new Branch();
 			while(resultSet.next()) {
                 branchObj.setBankId(resultSet.getInt("bank_id"));
@@ -100,6 +109,11 @@ public class BranchesDaoImpl implements BranchesDao{
 			} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally {
+		    try { resultSet.close(); } catch (Exception e) { /* ignored */ }
+		    try { statement.close(); } catch (Exception e) { /* ignored */ }
+		    try { connection.close(); } catch (Exception e) { /* ignored */ }
 		}
 		return branchList;
 	}
