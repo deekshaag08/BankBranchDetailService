@@ -27,8 +27,6 @@ public class BranchesDaoImpl implements BranchesDao{
 	
 	private DataSource dataSource;
 	
-	private Connection connection;
-	
 	
 	public BranchesDaoImpl()
 	{
@@ -58,7 +56,7 @@ public class BranchesDaoImpl implements BranchesDao{
 		Branch branchObj = new Branch();
 		ResultSet resultSet = null;
 		Statement statement = null;
-		
+		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
 			statement = connection.createStatement();
@@ -91,6 +89,7 @@ public class BranchesDaoImpl implements BranchesDao{
 		List<Branch> branchList= new ArrayList<>();
 		ResultSet resultSet = null;
 		Statement statement = null;
+		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
 			statement = connection.createStatement();
