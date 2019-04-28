@@ -46,6 +46,9 @@ public class BranchesDaoImpl implements BranchesDao{
 	    } else {
 	      HikariConfig config = new HikariConfig();
 	      config.setJdbcUrl(dbUrl);
+	      config.setConnectionTimeout(20000);
+	      config.setIdleTimeout(10000);
+	      config.setMaxLifetime(20000);
 	      return new HikariDataSource(config);
 	    }
 	  }
