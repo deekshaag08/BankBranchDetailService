@@ -8,9 +8,23 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+
 import entities.Branch;
 
 public class BranchesDaoImpl implements BranchesDao{
+	
+	@Value("${spring.datasource.url}")
+	private String dbUrl;
+	
+	@Autowired
+	  private DataSource dataSource;
 	
 	private Connection connection;
 	
@@ -18,25 +32,23 @@ public class BranchesDaoImpl implements BranchesDao{
 	public BranchesDaoImpl()
 	{
 		try {
-			connection = DriverManager.getConnection(
-					"jdbc:postgresql://localhost:5432/indian_banks_data", "postgres", "deeksha");
+			connection = dataSource.getConnection();
 		}catch (SQLException e) {
             System.out.println("Connection failure.");
             e.printStackTrace();
         }
-         /*   Statement statement = connection.createStatement();
-            System.out.println("Reading bank records...");
-           // System.out.printf("Bank name");
-            ResultSet resultSet = statement.executeQuery("SELECT name FROM banks where id<5");
-            while (resultSet.next()) {
-                System.out.println( resultSet.getString("name"));
-            }
- 
-        } /*catch (ClassNotFoundException e) {
-            System.out.println("PostgreSQL JDBC driver not found.");
-            e.printStackTrace();
-        }*/ 
 	}
+	
+	@Bean
+	  public DataSource dataSource() throws SQLException {
+	    if (dbUrl == null || dbUrl.isEmpty()) {
+	      return new HikariDataSource();
+	    } else {
+	      HikariConfig config = new HikariConfig();
+	      config.setJdbcUrl(dbUrl);
+	      return new HikariDataSource(config);
+	    }
+	  }
 	public Branch getBranch(String ifsc)
 	{
 		Branch branchObj = new Branch();
